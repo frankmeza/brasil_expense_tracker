@@ -11,13 +11,11 @@ ExpensesCtrl = Brasil.new do
       write_res_as_json(expenses: expenses)
     end
 
-    on get, 'vendor' do
-      on param('vendor') do |vendor|
-        expenses = Expense.where(vendor: vendor).map do |e|
-          e.serialize(:id, :vendor, :amount, :date)
-        end
-        write_res_as_json(expenses: expenses)
+    on get, 'vendor', param('vendor') do |vendor|
+      expenses = Expense.where(vendor: vendor).map do |e|
+        e.serialize(:id, :vendor, :amount, :date)
       end
+      write_res_as_json(expenses: expenses)
     end
 
     on post, root do
