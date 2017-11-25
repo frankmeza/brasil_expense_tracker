@@ -20,6 +20,10 @@ ExpensesCtrl = Brasil.new do
       write_res_as_json(expenses: expenses)
     end
 
+    on get, 'total' do
+      write_res_as_json(total: Expense.summary)
+    end
+
     on post, root do
       expense = parse_req_as_json
       Expense.create(expense)
@@ -27,5 +31,4 @@ ExpensesCtrl = Brasil.new do
       write_res_as_json(created: true)
     end
   end
-
 end
