@@ -1,20 +1,22 @@
 # expenses_controller
 
 ExpensesCtrl = Brasil.new do
+  def serialize_list(vendors)
+    vendors.map { |v| v.serialize(:id, :vendor, :amount, :date) }
+  end
+
   on true do
     set_response_as_json
 
     on get, root do
-      expenses = Expense.all.map do |e|
-        e.serialize(:id, :vendor, :amount, :date)
+      on param('vendor') do |vendor|
+        expenses = Expense.where(vendor: vendor)
+        serialize_list(expenses)
+        write_res_as_json(expenses: expenses)
       end
-      write_res_as_json(expenses: expenses)
-    end
 
-    on get, 'vendor', param('vendor') do |vendor|
-      expenses = Expense.where(vendor: vendor).map do |e|
-        e.serialize(:id, :vendor, :amount, :date)
-      end
+      expenses = Expense.all
+      serialize_list(expenses)
       write_res_as_json(expenses: expenses)
     end
 
@@ -25,4 +27,5 @@ ExpensesCtrl = Brasil.new do
       write_res_as_json(created: true)
     end
   end
+
 end
