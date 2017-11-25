@@ -8,7 +8,9 @@ Mongoid.configure do
 end
 
 # empty the database
-Mongoid::Config.purge!
+Mongoid::Config.purge! # doesn't work?
+User.all.delete
+Expense.all.delete
 
 # # # # # # # #
 #  seed data  #
