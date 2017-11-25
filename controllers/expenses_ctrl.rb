@@ -11,6 +11,16 @@ ExpensesCtrl = Brasil.new do
       write_res_as_json(expenses: expenses)
     end
 
+    on get, 'vendor' do
+      on param('vendor') do |vendor|
+        e = Expense.where(vendor: vendor).first
+        expense = e.present? ?
+          e.serialize(:id, :vendor, :amount, :date) :
+          "none found with that name."
+        write_res_as_json(expense: expense)
+      end
+    end
+
     on post, root do
       expense = parse_req_as_json
       Expense.create(expense)
