@@ -1,6 +1,6 @@
 require_relative '../test_helper.rb'
 
-class RackTest
+class UserCtrlTest < RackTest
 
   def setup
     @user = create(:user)
@@ -51,6 +51,19 @@ class RackTest
     new_username = { username: 'updated' }
     patch "/users/id/#{@user.id}", new_username.to_json, @jwt_admin
     assert_equal(204, res.status)
+  end
+
+  def test_create_user_success
+    new_user = attributes_for(:user)
+    post "/users", new_user.to_json, @jwt_admin
+    assert_equal(201, res.status)
+  end
+
+  def test_create_user_fail
+    new_user = attributes_for(:user, username: 'f', email: '')
+    post "/users", new_user.to_json, @jwt_admin
+    assert_equal(422, res.status)
+    assert_equal(Message.get_msg('bad_request'), res_as_json['errors'])
   end
 
   # DELETE /users/id/:id
