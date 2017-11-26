@@ -1,5 +1,3 @@
-# users_controller
-
 UsersCtrl = Brasil.new do
   on true do
     set_response_as_json
@@ -19,7 +17,7 @@ UsersCtrl = Brasil.new do
 
     on get, 'id/:id' do |id|
       u = User.[](id)
-      user = u.serialize(:id, :username, :email)
+      user = u.serialize(:id, :username, :email, :is_admin)
       write_res_as_json(user: user)
     end
 
@@ -34,6 +32,17 @@ UsersCtrl = Brasil.new do
       end
       remove_content_type_headers
       set_response_status(204)
+    end
+
+    on post, root do
+      body = parse_req_as_json
+      user = User.new(body)
+      if user.valid?
+        set_response_status(201)
+      else
+        set_response_status(422)
+        write_res_as_json(errors: Message.get_msg('bad_request'))
+      end
     end
 
     on delete, 'id/:id' do |id|
